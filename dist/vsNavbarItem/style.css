@@ -1,0 +1,7 @@
+/*!
+  * Vuesax v4.0.2-alpha-e.2 🖖 (https://lusaxweb.github.io/vuesax/)
+  * Forged by Luis Daniel Rovira, edited by ElBuenAnvita
+  * Released under the MIT License.
+  * Donate to Luis Daniel Rovira: https://www.patreon.com/bePatron?c=1567892
+  * © 2019, Lusaxweb. (https://lusaxweb.net)
+  */:root{--vs-shadow-opacity:.05;--vs-radius:20px;--vs-zindex-1:100000;--vs-zindex-2:99000;--vs-zindex-3:98000;--vs-zindex-4:97000;--vs-background-opacity:.2}.vs-navbar__item{padding:10px 15px;margin:0;border:0;background:transparent;font-size:.85rem;opacity:.7;-webkit-transition:all .25s ease,color 0s;transition:all .25s ease,color 0s;font-weight:700;color:inherit}.vs-navbar__item.active{opacity:1}.vs-navbar__item:hover{opacity:1}
