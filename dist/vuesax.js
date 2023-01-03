@@ -25457,10 +25457,40 @@ var VsCardGroup_class;
 
 
 
+var fakeScrollLeft = 0;
+var lastMsChanged = 0;
+/* function isElementInViewport(el: any) {
+  const rect = el.getBoundingClientRect();
 
-function isElementInViewport(el) {
-  var rect = el.getBoundingClientRect();
-  return rect.top >= 0 && rect.left >= 0 && rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) && rect.right <= (window.innerWidth || document.documentElement.clientWidth);
+  // where $0 is <div> of card
+  return (
+    rect.top >= 0 &&
+    // $0.offsetLeft - $0.parentElement.scrollLeft
+    rect.left >= 0 &&
+    rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+    // $0.offsetLeft + $0.offsetWidth - $0.parentElement.scrollLeft
+    rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+  );
+} */
+
+function isElementInViewportVanilla(el, parent) {
+  return el.offsetLeft - parent.scrollLeft >= 0 && // tslint:disable-next-line:max-line-length
+  el.offsetLeft + el.offsetWidth - parent.scrollLeft <= (window.innerWidth || document.documentElement.clientWidth);
+}
+
+function isElementInViewportVanillaOffset(el, parent, lastMs, scrollLeft, msOffset) {
+  console.log('el');
+  console.log(el);
+  console.log('parent');
+  console.log(parent);
+  console.log('lastMs=' + lastMs + ';sL=' + scrollLeft);
+
+  if (Date.now() - lastMs >= msOffset) {
+    return isElementInViewportVanilla(el, parent);
+  }
+
+  return el.offsetLeft - scrollLeft >= 0 && // tslint:disable-next-line:max-line-length
+  el.offsetLeft + el.offsetWidth - scrollLeft <= (window.innerWidth || document.documentElement.clientWidth);
 }
 
 var VsCardGroup_VsCardGroup = vue_class_component_esm(VsCardGroup_class =
@@ -25481,19 +25511,18 @@ function (_VsComponent) {
       staticClass: 'vs-card__group-prev',
       on: {
         click: function click(evt) {
-          // console.log('paso <')
-          var cardsI = _this.$refs.cards; // console.dir(cardsI)
-
+          var cardsI = _this.$refs.cards;
           var childrenI = Array.prototype.slice.call(cardsI.children).reverse();
           var isChanged = false;
           var signedCard = null;
           childrenI.forEach(function (el) {
             if (!isChanged) {
-              if (isElementInViewport(el)) {
+              if (isElementInViewportVanillaOffset(el, cardsI, lastMsChanged, fakeScrollLeft, 400)) {
                 isChanged = true;
               }
             } else {
-              if (!isElementInViewport(el) && signedCard == null) {
+              // tslint:disable-next-line:max-line-length
+              if (!isElementInViewportVanillaOffset(el, cardsI, lastMsChanged, fakeScrollLeft, 400) && signedCard == null) {
                 signedCard = el;
               }
             }
@@ -25502,15 +25531,9 @@ function (_VsComponent) {
           if (!(signedCard === null || signedCard.offsetLeft === null)) {
             // cardsI.scrollLeft = Math.abs(cardsI.offsetWidth - signedCard.offsetLeft - signedCard.offsetWidth)
             cardsI.scrollLeft = -(cardsI.offsetWidth - signedCard.offsetLeft - signedCard.offsetWidth);
-            /* console.log('SignedCard for < below.');
-            console.log('Operation: |' + cardsI.offsetWidth + " - " + signedCard.offsetLeft + " - " + signedCard.offsetWidth);
-            console.log(signedCard);
-            console.dir(signedCard); */
+            fakeScrollLeft = -(cardsI.offsetWidth - signedCard.offsetLeft - signedCard.offsetWidth);
+            lastMsChanged = Date.now();
           }
-          /* else {
-          console.log('No se encontraron más tarjetas en paso <')
-          } */
-
         }
       }
     }, [h(arrow_VsIconClose)]);
@@ -25518,19 +25541,18 @@ function (_VsComponent) {
       staticClass: 'vs-card__group-next',
       on: {
         click: function click(evt) {
-          // console.log('paso >')
-          var cardsI = _this.$refs.cards; // console.dir(cardsI)
-
+          var cardsI = _this.$refs.cards;
           var childrenI = Array.prototype.slice.call(cardsI.children);
           var isChanged = false;
           var signedCard = null;
           childrenI.forEach(function (el) {
             if (!isChanged) {
-              if (isElementInViewport(el)) {
+              if (isElementInViewportVanillaOffset(el, cardsI, lastMsChanged, fakeScrollLeft, 400)) {
                 isChanged = true;
               }
             } else {
-              if (!isElementInViewport(el) && signedCard == null) {
+              // tslint:disable-next-line:max-line-length
+              if (!isElementInViewportVanillaOffset(el, cardsI, lastMsChanged, fakeScrollLeft, 400) && signedCard == null) {
                 signedCard = el;
               }
             }
@@ -25538,10 +25560,8 @@ function (_VsComponent) {
 
           if (!(signedCard === null || signedCard.offsetLeft === null)) {
             cardsI.scrollLeft = signedCard.offsetLeft;
-            /* console.log('SignedCard for > below.');
-            console.log('Operation: ' + signedCard.offsetLeft);
-            console.log(signedCard);
-            console.dir(signedCard) */
+            fakeScrollLeft = signedCard.offsetLeft;
+            lastMsChanged = Date.now();
           }
         }
       }
