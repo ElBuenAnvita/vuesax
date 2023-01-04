@@ -28,11 +28,11 @@ function isElementInViewportVanilla(el: any, parent: any) {
 }
 
 function isElementInViewportVanillaOffset(el: any, parent: any, lastMs: number, scrollLeft: number, msOffset: number) {
-  console.log('el');
+  /* console.log('el');
   console.log(el);
   console.log('parent');
   console.log(parent);
-  console.log('lastMs=' + lastMs + ';sL=' + scrollLeft);
+  console.log('lastMs=' + lastMs + ';sL=' + scrollLeft); */
   if ((Date.now() - lastMs) >= msOffset) { return isElementInViewportVanilla(el, parent); }
   return (
       ((el.offsetLeft - scrollLeft) >= 0) &&
